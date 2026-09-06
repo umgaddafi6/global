@@ -1,0 +1,2427 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global — Next-Gen Distributed Edge Cloud & Compute Platform</title>
+  <meta name="description" content="Deploy, accelerate, and observe high-performance applications across 300+ global edge locations with sub-millisecond cold starts and intelligent Anycast routing.">
+  <meta name="theme-color" content="#090d16">
+
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Global — Next-Gen Distributed Edge Cloud">
+  <meta property="og:description" content="Sub-millisecond global compute, automated Anycast routing, and serverless edge databases.">
+  
+  <style>
+    /* -------------------------------------------------------------
+       1. CSS CUSTOM PROPERTIES & MODERN DESIGN TOKENS
+       ------------------------------------------------------------- */
+    :root {
+      /* Base Palettes */
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+      /* Dark Theme (Default) */
+      --bg-base: #06090e;
+      --bg-surface: #0d121c;
+      --bg-surface-elevated: #151d2e;
+      --bg-surface-hover: #1c273e;
+      --bg-glass: rgba(13, 18, 28, 0.75);
+
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --border-focus: #3b82f6;
+
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+
+      /* Brand Accents */
+      --brand-primary: #3b82f6;
+      --brand-primary-hover: #2563eb;
+      --brand-secondary: #06b6d4;
+      --brand-glow: rgba(59, 130, 246, 0.35);
+      --brand-gradient: linear-gradient(135deg, #38bdf8 0%, #3b82f6 50%, #818cf8 100%);
+      
+      --accent-success: #10b981;
+      --accent-warning: #f59e0b;
+      --accent-danger: #ef4444;
+
+      /* Shadows & Effects */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 12px 32px -4px rgba(0, 0, 0, 0.6), 0 4px 8px -2px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 40px -10px var(--brand-glow);
+
+      /* Radii */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+
+      /* Spacing & Layout */
+      --max-width: 1200px;
+      --header-height: 72px;
+      --transition-base: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #f1f5f9;
+      --bg-surface-hover: #e2e8f0;
+      --bg-glass: rgba(255, 255, 255, 0.85);
+
+      --border-subtle: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.16);
+      --border-focus: #2563eb;
+
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+
+      --brand-glow: rgba(37, 99, 235, 0.2);
+      --brand-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #4f46e5 100%);
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 16px 36px -4px rgba(0, 0, 0, 0.12);
+      --shadow-glow: 0 0 30px -5px var(--brand-glow);
+    }
+
+    /* -------------------------------------------------------------
+       2. RESET & BASE STYLES
+       ------------------------------------------------------------- */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      color-scheme: dark light;
+      scroll-behavior: smooth;
+      scrollbar-gutter: stable;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      min-height: 100dvh;
+      overflow-x: clip;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Scroll progress indicator using Scroll-Driven Animations */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--brand-gradient);
+      transform-origin: 0 50%;
+      z-index: 1001;
+      transform: scaleX(0);
+    }
+
+    @supports (animation-timeline: scroll()) {
+      #scroll-progress {
+        animation: progress-grow auto linear;
+        animation-timeline: scroll(root);
+      }
+      @keyframes progress-grow {
+        from { transform: scaleX(0); }
+        to { transform: scaleX(1); }
+      }
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color var(--transition-base);
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: none;
+    }
+
+    button {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    img, svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--border-focus);
+      outline-offset: 3px;
+    }
+
+    /* -------------------------------------------------------------
+       3. UTILITIES & TYPOGRAPHY
+       ------------------------------------------------------------- */
+    .container {
+      width: min(var(--max-width), 100% - 2.5rem);
+      margin-inline: auto;
+    }
+
+    .gradient-text {
+      background: var(--brand-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-success);
+      box-shadow: 0 0 8px var(--accent-success);
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all var(--transition-base);
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: var(--brand-primary);
+      color: #ffffff;
+      box-shadow: 0 4px 14px var(--brand-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--brand-glow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--text-secondary);
+      transform: translateY(-1px);
+    }
+
+    .btn-sm {
+      padding: 0.45rem 0.9rem;
+      font-size: 0.85rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-icon {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      color: var(--text-secondary);
+    }
+
+    .btn-icon:hover {
+      background: var(--bg-surface-hover);
+      color: var(--text-primary);
+    }
+
+    /* Ambient Background Gradients */
+    .bg-glow-orb {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: -1;
+      opacity: 0.45;
+    }
+
+    .orb-1 {
+      top: 5%;
+      left: 15%;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, #3b82f6 0%, rgba(6, 182, 212, 0) 70%);
+    }
+
+    .orb-2 {
+      top: 30%;
+      right: 10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #8b5cf6 0%, rgba(147, 51, 234, 0) 70%);
+    }
+
+    /* -------------------------------------------------------------
+       4. NAVIGATION / HEADER
+       ------------------------------------------------------------- */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: var(--header-height);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: var(--bg-glass);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background-color var(--transition-base), border-color var(--transition-base);
+    }
+
+    .nav-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-logo svg {
+      width: 32px;
+      height: 32px;
+      fill: none;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      position: relative;
+      padding-block: 0.25rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .mobile-toggle {
+      display: none;
+    }
+
+    /* -------------------------------------------------------------
+       5. HERO SECTION
+       ------------------------------------------------------------- */
+    .hero {
+      padding-block: clamp(3.5rem, 8vw, 6.5rem) 4rem;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: var(--text-secondary);
+      max-width: 580px;
+      line-height: 1.65;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .cli-install-box {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      position: relative;
+      margin-top: 0.75rem;
+      max-width: 100%;
+    }
+
+    .cli-install-box code {
+      color: var(--text-primary);
+    }
+
+    .copy-btn {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--transition-base);
+    }
+
+    .copy-btn:hover {
+      color: var(--brand-primary);
+    }
+
+    /* Live Interactive Hero Preview Card */
+    .hero-preview-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+      position: relative;
+      overflow: clip;
+      container-type: inline-size;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .window-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border-strong);
+    }
+
+    .window-dots span:nth-child(1) { background: #ef4444; }
+    .window-dots span:nth-child(2) { background: #f59e0b; }
+    .window-dots span:nth-child(3) { background: #10b981; }
+
+    .node-status-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-success);
+      font-family: var(--font-mono);
+      background: rgba(16, 185, 129, 0.1);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+    }
+
+    /* Interactive Region Simulator Widget inside Hero */
+    .edge-sim-box {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .edge-metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+
+    .metric-pill {
+      background: var(--bg-surface-elevated);
+      padding: 0.75rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    .metric-pill span {
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-pill strong {
+      font-size: 1.15rem;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+
+    .region-selector-label {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+    }
+
+    .region-select {
+      width: 100%;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.85rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .region-select option {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+
+    .latency-graph {
+      height: 60px;
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      padding-top: 0.5rem;
+      border-bottom: 1px dashed var(--border-subtle);
+      padding-bottom: 0.5rem;
+    }
+
+    .graph-bar {
+      flex: 1;
+      background: var(--brand-primary);
+      border-radius: 3px 3px 0 0;
+      opacity: 0.75;
+      transition: height 0.4s ease, background-color 0.3s;
+    }
+
+    .graph-bar:hover {
+      opacity: 1;
+      background: var(--brand-secondary);
+    }
+
+    .log-stream {
+      background: var(--bg-base);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      height: 85px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .log-stream span {
+      color: var(--accent-success);
+    }
+
+    /* -------------------------------------------------------------
+       6. LOGO TICKER / STATS
+       ------------------------------------------------------------- */
+    .stats-section {
+      padding-block: 2.5rem;
+      border-block: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-item h3 {
+      font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-item p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* -------------------------------------------------------------
+       7. BENTO GRID FEATURES SECTION
+       ------------------------------------------------------------- */
+    .section-header {
+      text-align: center;
+      max-width: 700px;
+      margin-inline: auto;
+      margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    }
+
+    .section-header h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-block: 0.75rem 1rem;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .features {
+      padding-block: clamp(4rem, 8vw, 7rem);
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+    }
+
+    .bento-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: clip;
+      transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+    }
+
+    .bento-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .bento-col-8 { grid-column: span 8; }
+    .bento-col-4 { grid-column: span 4; }
+    .bento-col-6 { grid-column: span 6; }
+    .bento-col-12 { grid-column: span 12; }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brand-primary);
+      margin-bottom: 1.25rem;
+    }
+
+    .card-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .bento-card h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+
+    .bento-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .card-visual {
+      margin-top: 1.5rem;
+      background: var(--bg-surface-elevated);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    .route-node {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.4rem 0.6rem;
+      background: var(--bg-base);
+      border-radius: var(--radius-sm);
+    }
+
+    /* -------------------------------------------------------------
+       8. INTERACTIVE LATENCY BENCHMARK
+       ------------------------------------------------------------- */
+    .benchmark-section {
+      padding-block: clamp(3.5rem, 7vw, 6rem);
+      background: var(--bg-surface);
+      border-block: 1px solid var(--border-subtle);
+    }
+
+    .benchmark-wrapper {
+      background: var(--bg-base);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: clamp(1.5rem, 4vw, 3rem);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .benchmark-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .slider-header span {
+      color: var(--brand-primary);
+      font-family: var(--font-mono);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-hover);
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--brand-primary);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--brand-glow);
+    }
+
+    .comparison-display {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .compare-bar-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .compare-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .compare-track {
+      height: 28px;
+      background: var(--bg-surface-elevated);
+      border-radius: var(--radius-md);
+      overflow: clip;
+      display: flex;
+      position: relative;
+    }
+
+    .compare-fill {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding-inline-start: 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: #fff;
+      transition: width 0.4s ease;
+    }
+
+    .fill-legacy {
+      background: #64748b;
+      width: 90%;
+    }
+
+    .fill-global {
+      background: var(--brand-gradient);
+      width: 18%;
+    }
+
+    /* -------------------------------------------------------------
+       9. PRICING SECTION
+       ------------------------------------------------------------- */
+    .pricing {
+      padding-block: clamp(4rem, 8vw, 7rem);
+    }
+
+    .billing-switch {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .switch-pill {
+      display: inline-flex;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 0.25rem;
+      cursor: pointer;
+    }
+
+    .switch-pill button {
+      padding: 0.45rem 1.1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all var(--transition-base);
+    }
+
+    .switch-pill button.active {
+      background: var(--brand-primary);
+      color: #ffffff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      align-items: stretch;
+    }
+
+    .pricing-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform var(--transition-base), border-color var(--transition-base);
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-strong);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 35px -10px var(--brand-glow);
+      background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-surface-elevated) 100%);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--brand-gradient);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.85rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .pricing-header h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .pricing-header p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      min-height: 45px;
+    }
+
+    .price-value {
+      margin-block: 1.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+    }
+
+    .price-value .currency {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .price-value .amount {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .price-value .period {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin-bottom: 2rem;
+      flex-grow: 1;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+    }
+
+    .feature-list li svg {
+      width: 18px;
+      height: 18px;
+      color: var(--accent-success);
+      flex-shrink: 0;
+    }
+
+    /* -------------------------------------------------------------
+       10. FAQ SECTION (Native HTML Details & Summary)
+       ------------------------------------------------------------- */
+    .faq-section {
+      padding-block: clamp(4rem, 8vw, 6.5rem);
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .faq-accordion {
+      max-width: 800px;
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Modern details accordion */
+    details.faq-item {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: clip;
+      transition: border-color var(--transition-base), background-color var(--transition-base);
+    }
+
+    details.faq-item[open] {
+      border-color: var(--border-strong);
+      background: var(--bg-surface);
+    }
+
+    summary.faq-question {
+      padding: 1.25rem 1.5rem;
+      font-weight: 600;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      list-style: none;
+      user-select: none;
+    }
+
+    summary.faq-question::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--text-muted);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s;
+    }
+
+    details[open] .faq-icon {
+      transform: rotate(180deg);
+      color: var(--brand-primary);
+    }
+
+    .faq-answer {
+      padding: 0 1.5rem 1.25rem 1.5rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    /* -------------------------------------------------------------
+       11. CTA BANNER
+       ------------------------------------------------------------- */
+    .cta-section {
+      padding-block: clamp(4rem, 8vw, 7rem);
+    }
+
+    .cta-box {
+      background: radial-gradient(ellipse at top, #1e293b 0%, #090d16 100%);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: clamp(2.5rem, 6vw, 4.5rem) 2rem;
+      text-align: center;
+      position: relative;
+      overflow: clip;
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+
+    .cta-box h2 {
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .cta-box p {
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+      max-width: 600px;
+      margin-inline: auto;
+      margin-bottom: 2rem;
+    }
+
+    .cta-form {
+      display: flex;
+      gap: 0.75rem;
+      max-width: 480px;
+      margin-inline: auto;
+      flex-wrap: wrap;
+    }
+
+    .cta-input {
+      flex: 1 1 260px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.2rem;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      min-height: 48px;
+    }
+
+    .cta-input:focus {
+      border-color: var(--brand-primary);
+    }
+
+    .cta-input:user-invalid {
+      border-color: var(--accent-danger);
+    }
+
+    /* -------------------------------------------------------------
+       12. FOOTER
+       ------------------------------------------------------------- */
+    .site-footer {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      padding-block: 4rem 2.5rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 3rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .footer-brand p {
+      margin-block: 1rem 1.5rem;
+      max-width: 320px;
+      line-height: 1.6;
+    }
+
+    .footer-col h4 {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      background: var(--bg-surface-elevated);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    /* -------------------------------------------------------------
+       13. NATIVE MODAL DIALOG (<dialog>)
+       ------------------------------------------------------------- */
+    dialog#signup-modal {
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      padding: 2.25rem;
+      max-width: 480px;
+      width: calc(100% - 2rem);
+      margin: auto;
+      box-shadow: var(--shadow-lg);
+
+      /* Top-layer Animation standard */
+      opacity: 0;
+      transform: scale(0.95) translateY(10px);
+      transition-property: opacity, transform, display, overlay;
+      transition-duration: 0.25s;
+      transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+      transition-behavior: allow-discrete;
+    }
+
+    dialog#signup-modal[open] {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+
+      @starting-style {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+    }
+
+    dialog#signup-modal::backdrop {
+      background-color: rgba(0, 0, 0, 0);
+      backdrop-filter: blur(0px);
+      transition: display 0.25s allow-discrete, overlay 0.25s allow-discrete, background-color 0.25s ease, backdrop-filter 0.25s ease;
+    }
+
+    dialog#signup-modal[open]::backdrop {
+      background-color: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+
+      @starting-style {
+        background-color: rgba(0, 0, 0, 0);
+        backdrop-filter: blur(0px);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-header h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .modal-header p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    .modal-close-btn {
+      color: var(--text-muted);
+      padding: 0.25rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .modal-close-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-surface-elevated);
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-field label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .form-field input, .form-field select {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      min-height: 48px;
+    }
+
+    .form-field input:focus, .form-field select:focus {
+      border-color: var(--brand-primary);
+    }
+
+    /* -------------------------------------------------------------
+       14. NATIVE POPOVER TOAST NOTIFICATION
+       ------------------------------------------------------------- */
+    #toast-notification {
+      position: fixed;
+      inset-block-start: auto;
+      inset-block-end: 2rem;
+      inset-inline-end: 2rem;
+      inset-inline-start: auto;
+      margin: 0;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.92rem;
+      font-weight: 500;
+      z-index: 2000;
+
+      opacity: 0;
+      transform: translateY(12px);
+      transition-property: opacity, transform, display, overlay;
+      transition-duration: 0.25s;
+      transition-timing-function: ease-out;
+      transition-behavior: allow-discrete;
+    }
+
+    #toast-notification:popover-open {
+      opacity: 1;
+      transform: translateY(0);
+
+      @starting-style {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+    }
+
+    /* -------------------------------------------------------------
+       15. RESPONSIVE QUERIES
+       ------------------------------------------------------------- */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        margin-inline: auto;
+      }
+
+      .benchmark-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .bento-col-8, .bento-col-4, .bento-col-6 {
+        grid-column: span 12;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: var(--header-height);
+        left: 0;
+        width: 100%;
+        background: var(--bg-surface);
+        border-bottom: 1px solid var(--border-subtle);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+      }
+
+      .mobile-toggle {
+        display: inline-flex;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll Progress -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Background Orbs -->
+  <div class="bg-glow-orb orb-1" aria-hidden="true"></div>
+  <div class="bg-glow-orb orb-2" aria-hidden="true"></div>
+
+  <!-- Header Navigation -->
+  <header class="site-header">
+    <div class="container nav-wrapper">
+      <a href="#" class="brand-logo" aria-label="Global Cloud Homepage">
+        <svg viewBox="0 0 32 32">
+          <circle cx="16" cy="16" r="14" stroke="url(#logo-grad)" stroke-width="2.5" />
+          <path d="M16 2 A 14 14 0 0 1 16 30 M2 16 A 14 14 0 0 1 30 16" stroke="url(#logo-grad)" stroke-width="1.8" stroke-dasharray="2 2"/>
+          <circle cx="16" cy="16" r="5" fill="url(#logo-grad)" />
+          <defs>
+            <linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#38bdf8"/>
+              <stop offset="0.5" stop-color="#3b82f6"/>
+              <stop offset="1" stop-color="#818cf8"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>GLOBAL<span class="gradient-text">.</span></span>
+      </a>
+
+      <nav aria-label="Primary Navigation">
+        <ul class="nav-links" id="primary-nav">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#architecture">Architecture</a></li>
+          <li><a href="#benchmarks">Performance</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="btn-icon" aria-label="Toggle dark/light mode" title="Toggle theme">
+          <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+          <svg id="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="m4.93 4.93 1.41 1.41"></path>
+            <path d="m17.66 17.66 1.41 1.41"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="m6.34 17.66-1.41 1.41"></path>
+            <path d="m19.07 4.93-1.41 1.41"></path>
+          </svg>
+        </button>
+
+        <button class="btn btn-primary btn-sm" id="btn-open-modal">Get Started</button>
+
+        <button class="btn-icon mobile-toggle" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- 1. HERO SECTION -->
+    <section class="hero container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="badge">
+            <span class="badge-dot"></span>
+            <span>Global 3.0 Engine is live — Sub-millisecond Edge</span>
+          </div>
+
+          <h1>The Next-Gen <br><span class="gradient-text">Global Cloud</span> For Intelligent Apps</h1>
+
+          <p>
+            Deploy serverless compute, fast distributed state, and automated Anycast routing across 300+ global edge nodes. Cut latencies by 80% without managing clusters.
+          </p>
+
+          <div class="hero-ctas">
+            <button class="btn btn-primary" id="hero-cta-btn">
+              Start Building Free
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+            <a href="#benchmarks" class="btn btn-secondary">Explore Benchmarks</a>
+          </div>
+
+          <div class="cli-install-box">
+            <span>$</span>
+            <code id="cli-cmd">npm i -g @global/cli && global deploy</code>
+            <button class="copy-btn" id="copy-cli-btn" title="Copy CLI command" aria-label="Copy CLI command">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Interactive Hero Edge Preview Simulator -->
+        <div class="hero-preview-card" aria-label="Global edge telemetry demo">
+          <div class="preview-header">
+            <div class="window-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="node-status-badge">
+              <span class="badge-dot"></span>
+              <span>EDGE ANYCAST: OPTIMAL</span>
+            </div>
+          </div>
+
+          <div class="edge-sim-box">
+            <div>
+              <div class="region-selector-label">
+                <span>Active Routing Point</span>
+                <span id="routed-ip" style="font-family: var(--font-mono); font-size: 0.78rem;">198.51.100.42</span>
+              </div>
+              <select id="region-selector" class="region-select" aria-label="Simulate connection from region">
+                <option value="tokyo">Tokyo (NRT) — Asia Pacific</option>
+                <option value="frankfurt" selected>Frankfurt (FRA) — Europe</option>
+                <option value="virginia">Ashburn (IAD) — US East</option>
+                <option value="saopaulo">São Paulo (GRU) — South America</option>
+                <option value="sydney">Sydney (SYD) — Oceania</option>
+                <option value="london">London (LHR) — UK</option>
+              </select>
+            </div>
+
+            <div class="edge-metric-row">
+              <div class="metric-pill">
+                <span>Latency</span>
+                <strong id="sim-latency">8.4 ms</strong>
+              </div>
+              <div class="metric-pill">
+                <span>Cold Start</span>
+                <strong>0.8 ms</strong>
+              </div>
+              <div class="metric-pill">
+                <span>Cache Hit</span>
+                <strong id="sim-cache">99.4%</strong>
+              </div>
+            </div>
+
+            <div class="latency-graph" id="graph-container">
+              <div class="graph-bar" style="height: 35%;"></div>
+              <div class="graph-bar" style="height: 60%;"></div>
+              <div class="graph-bar" style="height: 45%;"></div>
+              <div class="graph-bar" style="height: 75%;"></div>
+              <div class="graph-bar" style="height: 50%;"></div>
+              <div class="graph-bar" style="height: 85%;"></div>
+              <div class="graph-bar" style="height: 40%;"></div>
+              <div class="graph-bar" style="height: 90%;"></div>
+              <div class="graph-bar" style="height: 65%;"></div>
+              <div class="graph-bar" style="height: 30%;"></div>
+            </div>
+
+            <div class="log-stream" id="log-console" aria-live="polite">
+              <div><span>[OK]</span> Anycast handshake established</div>
+              <div><span>[ROUTED]</span> Nearest POP verified: Frankfurt-FRA1</div>
+              <div><span>[READY]</span> WebAssembly isolate initialized (0.6ms)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. STATS BAR -->
+    <section class="stats-section" aria-label="Key Platform Metrics">
+      <div class="container stats-grid">
+        <div class="stat-item">
+          <h3 class="gradient-text">300+</h3>
+          <p>Global Edge Locations</p>
+        </div>
+        <div class="stat-item">
+          <h3 class="gradient-text">&lt;12ms</h3>
+          <p>Global P95 Latency</p>
+        </div>
+        <div class="stat-item">
+          <h3 class="gradient-text">99.999%</h3>
+          <p>Uptime SLA Guaranteed</p>
+        </div>
+        <div class="stat-item">
+          <h3 class="gradient-text">14B+</h3>
+          <p>Monthly Edge Requests</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. BENTO GRID FEATURES -->
+    <section class="features container" id="features">
+      <div class="section-header">
+        <span class="badge">Engineered for Scale</span>
+        <h2>Unified Edge Architecture for Speed & Precision</h2>
+        <p>Eliminate origins, database bottlenecks, and cold starts with a cohesive platform designed for high-concurrency workloads.</p>
+      </div>
+
+      <div class="bento-grid">
+        <!-- Feature 1 (Large) -->
+        <article class="bento-card bento-col-8">
+          <div>
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                <polyline points="2 17 12 22 22 17"/>
+                <polyline points="2 12 12 17 22 12"/>
+              </svg>
+            </div>
+            <h3>Zero-Cold-Start Serverless Isolate Workers</h3>
+            <p>Runs your JavaScript, TypeScript, or Rust logic in V8 isolates that spin up in under 1 millisecond. No container overhead, zero memory bloat, instant auto-scaling to thousands of concurrent requests.</p>
+          </div>
+          <div class="card-visual">
+            <div class="route-node">
+              <span>POST /api/checkout</span>
+              <span style="color: var(--accent-success);">200 OK • 1.2ms</span>
+            </div>
+            <div class="route-node">
+              <span>GET /edge-cache/catalog</span>
+              <span style="color: var(--accent-success);">304 Not Modified • 0.4ms</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Feature 2 -->
+        <article class="bento-card bento-col-4">
+          <div>
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              </svg>
+            </div>
+            <h3>Instant Global State (KV & SQL)</h3>
+            <p>Read-heavy SQL replicas and microsecond key-value stores colocated alongside compute across every continent.</p>
+          </div>
+          <div class="badge" style="margin-top: 1.5rem; align-self: flex-start;">
+            <span>Automatic CRDT Conflict Resolution</span>
+          </div>
+        </article>
+
+        <!-- Feature 3 -->
+        <article class="bento-card bento-col-4">
+          <div>
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <h3>Automated Anycast & DDoS Shield</h3>
+            <p>150 Tbps scrubbing capacity. Malicious traffic is neutralized at the network ingress before it ever touches your application.</p>
+          </div>
+        </article>
+
+        <!-- Feature 4 -->
+        <article class="bento-card bento-col-4">
+          <div>
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+            </div>
+            <h3>Real-Time Streaming Telemetry</h3>
+            <p>Instant distributed tracing, structured logging, and anomaly detection without third-party agent overhead.</p>
+          </div>
+        </article>
+
+        <!-- Feature 5 -->
+        <article class="bento-card bento-col-4">
+          <div>
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+            </div>
+            <h3>Zero Config SSL & Custom Domains</h3>
+            <p>Wildcard certificates issued automatically via ACME in seconds with HTTP/3 & QUIC native support enabled.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 4. PERFORMANCE BENCHMARKS & INTERACTIVE CALCULATOR -->
+    <section class="benchmark-section" id="benchmarks">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge">Performance Head-to-Head</span>
+          <h2>Measure the Global Latency Advantage</h2>
+          <p>See how distributed edge isolates radically outperform centralized multi-region cloud setups.</p>
+        </div>
+
+        <div class="benchmark-wrapper">
+          <div class="benchmark-controls">
+            <h3>Interactive Latency Estimator</h3>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">Adjust your expected monthly request volume to preview TTFB (Time to First Byte) and network round-trip savings.</p>
+
+            <div class="control-group">
+              <div class="slider-header">
+                <label for="req-slider">Monthly Request Volume</label>
+                <span id="slider-req-val">25 Million</span>
+              </div>
+              <input type="range" id="req-slider" min="1" max="100" value="25" aria-label="Monthly requests in millions">
+            </div>
+
+            <div class="control-group">
+              <div class="slider-header">
+                <label for="reg-slider">Target Continents</label>
+                <span id="slider-reg-val">5 Continents</span>
+              </div>
+              <input type="range" id="reg-slider" min="1" max="6" value="5" aria-label="Number of target continents">
+            </div>
+
+            <div class="badge" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: var(--brand-primary);">
+              ⚡ Estimated compute savings: <strong id="est-savings" style="margin-left: 4px;">$1,840/mo</strong>
+            </div>
+          </div>
+
+          <div class="comparison-display">
+            <div class="compare-bar-container">
+              <div class="compare-label">
+                <span>Traditional Centralized Cloud (AWS/GCP US-East)</span>
+                <span style="color: var(--accent-danger);" id="legacy-ms">185ms TTFB</span>
+              </div>
+              <div class="compare-track">
+                <div class="compare-fill fill-legacy" id="legacy-fill">185 ms</div>
+              </div>
+            </div>
+
+            <div class="compare-bar-container">
+              <div class="compare-label">
+                <span style="font-weight: 700;">Global Anycast Edge Network</span>
+                <span style="color: var(--accent-success);" id="global-ms">14ms TTFB</span>
+              </div>
+              <div class="compare-track">
+                <div class="compare-fill fill-global" id="global-fill">14 ms</div>
+              </div>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+              * Benchmarked via 5,000 synthetic synthetic probes across Tokyo, London, São Paulo, and Frankfurt testing real-world HTTP/3 round-trips.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. PRICING SECTION -->
+    <section class="pricing container" id="pricing">
+      <div class="section-header">
+        <span class="badge">Predictable Pricing</span>
+        <h2>Transparent Plans That Scale With You</h2>
+        <p>No bandwidth surprises, no hidden per-region upcharges. Pay only for what your users actually consume.</p>
+      </div>
+
+      <div class="billing-switch">
+        <span>Monthly Billing</span>
+        <div class="switch-pill" role="tablist" aria-label="Billing frequency toggle">
+          <button id="bill-monthly" class="active" role="tab" aria-selected="true">Monthly</button>
+          <button id="bill-annual" role="tab" aria-selected="false">Annual <span style="color: var(--accent-success); font-size: 0.75rem;">(Save 20%)</span></button>
+        </div>
+        <span>Annual Billing</span>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Starter Tier -->
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3>Developer</h3>
+            <p>Perfect for side projects, prototypes, and hobbyist developers.</p>
+          </div>
+          <div class="price-value">
+            <span class="currency">$</span>
+            <span class="amount" id="price-dev">0</span>
+            <span class="period">/month</span>
+          </div>
+          <ul class="feature-list">
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              100,000 Requests/day
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              50 Edge Locations
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Free Global SSL Certificates
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Community Support
+            </li>
+          </ul>
+          <button class="btn btn-secondary plan-btn" data-plan="Developer">Get Started Free</button>
+        </div>
+
+        <!-- Pro Tier -->
+        <div class="pricing-card featured">
+          <div class="featured-badge">Most Popular</div>
+          <div class="pricing-header">
+            <h3>Pro</h3>
+            <p>For growing applications, production startups, and web platforms.</p>
+          </div>
+          <div class="price-value">
+            <span class="currency">$</span>
+            <span class="amount" id="price-pro">29</span>
+            <span class="period" id="period-pro">/month</span>
+          </div>
+          <ul class="feature-list">
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              10,000,000 Requests/month
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Full 300+ Edge Locations
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Serverless Edge KV & SQL Cache
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              99.99% Uptime SLA
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Priority Engineering Support
+            </li>
+          </ul>
+          <button class="btn btn-primary plan-btn" data-plan="Pro">Start 14-Day Trial</button>
+        </div>
+
+        <!-- Enterprise Tier -->
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3>Enterprise</h3>
+            <p>For organizations requiring custom compliance, SLAs, and dedicated capacity.</p>
+          </div>
+          <div class="price-value">
+            <span class="currency">$</span>
+            <span class="amount" id="price-ent">249</span>
+            <span class="period" id="period-ent">/month</span>
+          </div>
+          <ul class="feature-list">
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Unlimited Requests & Custom Bandwidth
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Dedicated Dedicated Anycast IP Blocks
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              99.999% Guaranteed SLA
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              Custom SOC2 Type II & HIPAA Compliance
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              24/7/365 Dedicated TAM & Slack Channel
+            </li>
+          </ul>
+          <button class="btn btn-secondary plan-btn" data-plan="Enterprise">Contact Sales</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. FAQ SECTION (Native HTML5 Details & Summary with name="faq") -->
+    <section class="faq-section" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge">Frequently Asked Questions</span>
+          <h2>Everything You Need To Know</h2>
+          <p>Common questions about migrating, deploying, and scaling on Global.</p>
+        </div>
+
+        <div class="faq-accordion">
+          <!-- Item 1 -->
+          <details class="faq-item" name="faq" open>
+            <summary class="faq-question">
+              <span>How is Global different from traditional serverless like AWS Lambda?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              Traditional serverless platforms package your application in heavyweight container images or virtual machines that take 200ms to 2 seconds to initialize (cold starts). Global uses isolated V8 execution runtimes that launch in less than 1ms directly in 300+ edge data centers nearest to your end users.
+            </div>
+          </details>
+
+          <!-- Item 2 -->
+          <details class="faq-item" name="faq">
+            <summary class="faq-question">
+              <span>Can I connect to my existing PostgreSQL or MySQL database?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              Yes! Global supports standard TCP socket connections with connection pooling over edge relays (Hyperdrive), preventing pool exhaustion and maintaining persistent connections from edge isolates back to your primary database with minimal round trips.
+            </div>
+          </details>
+
+          <!-- Item 3 -->
+          <details class="faq-item" name="faq">
+            <summary class="faq-question">
+              <span>How does Anycast DNS and traffic routing work?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              Global announces your IP addresses via BGP from all 300+ edge nodes simultaneously. When an end user makes an HTTP request, the internet's routing infrastructure naturally routes their packets to the closest physical data center, shaving tens or hundreds of milliseconds off every request.
+            </div>
+          </details>
+
+          <!-- Item 4 -->
+          <details class="faq-item" name="faq">
+            <summary class="faq-question">
+              <span>Do you support frameworks like Next.js, Remix, Astro, and SvelteKit?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              Yes! Our CLI automatically detects your framework build output and transforms dynamic server-rendered routes into edge isolate workers, while automatically optimizing and caching static assets across global CDN caches.
+            </div>
+          </details>
+
+          <!-- Item 5 -->
+          <details class="faq-item" name="faq">
+            <summary class="faq-question">
+              <span>What happens if my traffic spikes by 100x unexpectedly?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              Because edge isolates require virtually zero memory overhead to initialize, traffic spikes are naturally absorbed in parallel across hundreds of nodes worldwide without requiring pre-warming or provisioned concurrency.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CTA SECTION -->
+    <section class="cta-section container">
+      <div class="cta-box">
+        <h2>Ready to build at the speed of light?</h2>
+        <p>Join thousands of fast-moving developers and enterprises who trust Global to power their high-performance internet presence.</p>
+        
+        <form class="cta-form" id="newsletter-form" action="#" method="POST">
+          <input 
+            type="email" 
+            name="email" 
+            class="cta-input" 
+            placeholder="Enter your work email..." 
+            autocomplete="email" 
+            inputmode="email" 
+            required
+            aria-label="Your email address"
+          >
+          <button type="submit" class="btn btn-primary" style="min-height: 48px;">
+            Get Instant Access
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="brand-logo" aria-label="Global Homepage">
+            <svg viewBox="0 0 32 32" style="width: 24px; height: 24px;">
+              <circle cx="16" cy="16" r="14" stroke="url(#logo-grad-f)" stroke-width="2.5" />
+              <path d="M16 2 A 14 14 0 0 1 16 30 M2 16 A 14 14 0 0 1 30 16" stroke="url(#logo-grad-f)" stroke-width="1.8" stroke-dasharray="2 2"/>
+              <circle cx="16" cy="16" r="5" fill="url(#logo-grad-f)" />
+              <defs>
+                <linearGradient id="logo-grad-f" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#38bdf8"/>
+                  <stop offset="1" stop-color="#3b82f6"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span>GLOBAL</span>
+          </a>
+          <p>
+            The programmable cloud platform engineered for ultra-low latency, serverless edge compute, and automated global scale.
+          </p>
+          <div class="status-badge">
+            <span class="badge-dot"></span>
+            <span>All 314 Edge POPs Operational</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <ul class="footer-links">
+            <li><a href="#features">Edge Compute</a></li>
+            <li><a href="#features">Distributed KV</a></li>
+            <li><a href="#features">Anycast Network</a></li>
+            <li><a href="#benchmarks">Global Latency</a></li>
+            <li><a href="#pricing">Pricing & Limits</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Developers</h4>
+          <ul class="footer-links">
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">CLI Reference</a></li>
+            <li><a href="#">REST & GraphQL API</a></li>
+            <li><a href="#">Runtime Examples</a></li>
+            <li><a href="#">Status Page</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Global</a></li>
+            <li><a href="#">Security & SOC2</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Global Edge Infrastructure Inc. All rights reserved.</p>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="#" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </a>
+          <a href="#" aria-label="X / Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" aria-label="Discord">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 0 1 .077-.01c3.931 1.793 8.18 1.793 12.061 0a.075.075 0 0 1 .078.009c.12.098.246.195.373.288a.077.077 0 0 1-.006.127c-.598.35-1.22.648-1.873.891a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- -------------------------------------------------------------
+       16. NATIVE MODAL DIALOG (<dialog id="signup-modal">)
+       ------------------------------------------------------------- -->
+  <dialog id="signup-modal" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <div>
+        <h3 id="modal-title">Deploy on Global</h3>
+        <p>Get started with free developer credits today.</p>
+      </div>
+      <button class="modal-close-btn" id="modal-close" aria-label="Close dialog">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form class="modal-form" id="signup-form" method="dialog">
+      <div class="form-field">
+        <label for="reg-name">Full Name</label>
+        <input type="text" id="reg-name" name="name" placeholder="Grace Hopper" autocomplete="name" required>
+      </div>
+
+      <div class="form-field">
+        <label for="reg-email">Work Email</label>
+        <input type="email" id="reg-email" name="email" placeholder="grace@company.com" autocomplete="email" required>
+      </div>
+
+      <div class="form-field">
+        <label for="reg-plan">Selected Tier</label>
+        <select id="reg-plan" name="plan">
+          <option value="Developer">Developer Tier (Free)</option>
+          <option value="Pro" selected>Pro Tier ($29/month)</option>
+          <option value="Enterprise">Enterprise Tier (Custom)</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem; width: 100%; min-height: 48px;">
+        Create Your Account
+      </button>
+    </form>
+  </dialog>
+
+  <!-- -------------------------------------------------------------
+       17. NATIVE POPOVER TOAST NOTIFICATION
+       ------------------------------------------------------------- -->
+  <div id="toast-notification" popover="auto" role="status" aria-live="polite">
+    <span id="toast-icon">🚀</span>
+    <span id="toast-text">Action completed successfully!</span>
+  </div>
+
+  <!-- -------------------------------------------------------------
+       18. JAVASCRIPT LOGIC
+       ------------------------------------------------------------- -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // --- A. THEME TOGGLE & PERSISTENCE ---
+      const themeToggle = document.getElementById('theme-toggle');
+      const iconMoon = document.getElementById('theme-icon-moon');
+      const iconSun = document.getElementById('theme-icon-sun');
+      const htmlEl = document.documentElement;
+
+      const getPreferredTheme = () => {
+        const saved = localStorage.getItem('global-theme');
+        if (saved) return saved;
+        return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      };
+
+      const setTheme = (theme) => {
+        htmlEl.setAttribute('data-theme', theme);
+        localStorage.setItem('global-theme', theme);
+        if (theme === 'light') {
+          iconMoon.style.display = 'none';
+          iconSun.style.display = 'block';
+        } else {
+          iconMoon.style.display = 'block';
+          iconSun.style.display = 'none';
+        }
+      };
+
+      setTheme(getPreferredTheme());
+
+      themeToggle.addEventListener('click', () => {
+        const current = htmlEl.getAttribute('data-theme');
+        setTheme(current === 'light' ? 'dark' : 'light');
+      });
+
+      // --- B. MOBILE NAVIGATION MENU ---
+      const mobileBtn = document.getElementById('mobile-menu-btn');
+      const navLinks = document.getElementById('primary-nav');
+
+      mobileBtn.addEventListener('click', () => {
+        const expanded = mobileBtn.getAttribute('aria-expanded') === 'true';
+        mobileBtn.setAttribute('aria-expanded', !expanded);
+        navLinks.classList.toggle('active');
+      });
+
+      // Close mobile menu when link is clicked
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          mobileBtn.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      // --- C. NATIVE POPOVER TOAST HELPER ---
+      const toast = document.getElementById('toast-notification');
+      const toastText = document.getElementById('toast-text');
+      const toastIcon = document.getElementById('toast-icon');
+      let toastTimer = null;
+
+      const showToast = (message, icon = '🚀') => {
+        if (!toast) return;
+        toastText.textContent = message;
+        toastIcon.textContent = icon;
+        
+        try {
+          if (toast.showPopover) {
+            toast.showPopover();
+          } else {
+            // Fallback for older browsers
+            toast.style.display = 'flex';
+            toast.style.opacity = '1';
+          }
+        } catch (e) {
+          toast.style.display = 'flex';
+          toast.style.opacity = '1';
+        }
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          try {
+            if (toast.hidePopover) {
+              toast.hidePopover();
+            } else {
+              toast.style.display = 'none';
+            }
+          } catch(e) {
+            toast.style.display = 'none';
+          }
+        }, 3500);
+      };
+
+      // --- D. CLI COMMAND COPY BUTTON ---
+      const copyBtn = document.getElementById('copy-cli-btn');
+      const cliCmd = document.getElementById('cli-cmd');
+
+      copyBtn.addEventListener('click', async () => {
+        const text = cliCmd.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast('CLI command copied to clipboard!', '📋');
+        } catch (err) {
+          showToast('Failed to copy text', '⚠️');
+        }
+      });
+
+      // --- E. NATIVE DIALOG MODAL MANAGEMENT ---
+      const signupModal = document.getElementById('signup-modal');
+      const openModalBtn = document.getElementById('btn-open-modal');
+      const heroCtaBtn = document.getElementById('hero-cta-btn');
+      const closeModalBtn = document.getElementById('modal-close');
+      const regPlanSelect = document.getElementById('reg-plan');
+
+      const openModalWithPlan = (planName = 'Pro') => {
+        if (regPlanSelect) {
+          regPlanSelect.value = planName;
+        }
+        if (signupModal && signupModal.showModal) {
+          signupModal.showModal();
+        }
+      };
+
+      if (openModalBtn) openModalBtn.addEventListener('click', () => openModalWithPlan('Developer'));
+      if (heroCtaBtn) heroCtaBtn.addEventListener('click', () => openModalWithPlan('Pro'));
+      if (closeModalBtn) closeModalBtn.addEventListener('click', () => signupModal.close());
+
+      // Light-dismiss dialog on backdrop click
+      signupModal.addEventListener('click', (event) => {
+        const rect = signupModal.getBoundingClientRect();
+        const isInDialog = (
+          rect.top <= event.clientY &&
+          event.clientY <= rect.top + rect.height &&
+          rect.left <= event.clientX &&
+          event.clientX <= rect.left + rect.width
+        );
+        if (!isInDialog) {
+          signupModal.close();
+        }
+      });
+
+      // Plan Buttons click handling
+      document.querySelectorAll('.plan-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const plan = btn.getAttribute('data-plan') || 'Pro';
+          openModalWithPlan(plan);
+        });
+      });
+
+      // Signup form submit
+      const signupForm = document.getElementById('signup-form');
+      signupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('reg-email').value;
+        signupModal.close();
+        showToast(`Welcome! Activation link sent to ${email}`, '🎉');
+        signupForm.reset();
+      });
+
+      // Newsletter form submit
+      const newsletterForm = document.getElementById('newsletter-form');
+      if (newsletterForm) {
+        newsletterForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const emailInput = newsletterForm.querySelector('input[type="email"]');
+          showToast(`Access confirmed! Welcome aboard ${emailInput.value}`, '✨');
+          newsletterForm.reset();
+        });
+      }
+
+      // --- F. INTERACTIVE HERO REGION SIMULATOR ---
+      const regionSelector = document.getElementById('region-selector');
+      const simLatency = document.getElementById('sim-latency');
+      const simCache = document.getElementById('sim-cache');
+      const routedIp = document.getElementById('routed-ip');
+      const logConsole = document.getElementById('log-console');
+      const graphContainer = document.getElementById('graph-container');
+
+      const regionData = {
+        frankfurt: { latency: '8.4 ms', cache: '99.4%', ip: '198.51.100.42', pop: 'Frankfurt-FRA1' },
+        tokyo: { latency: '6.1 ms', cache: '99.8%', ip: '203.0.113.19', pop: 'Tokyo-NRT2' },
+        virginia: { latency: '4.8 ms', cache: '99.9%', ip: '192.0.2.88', pop: 'Ashburn-IAD4' },
+        saopaulo: { latency: '14.2 ms', cache: '98.7%', ip: '198.51.100.201', pop: 'SaoPaulo-GRU1' },
+        sydney: { latency: '9.3 ms', cache: '99.1%', ip: '203.0.113.77', pop: 'Sydney-SYD3' },
+        london: { latency: '5.2 ms', cache: '99.6%', ip: '192.0.2.145', pop: 'London-LHR1' }
+      };
+
+      const updateSimulation = (regionKey) => {
+        const data = regionData[regionKey] || regionData.frankfurt;
+        simLatency.textContent = data.latency;
+        simCache.textContent = data.cache;
+        routedIp.textContent = data.ip;
+
+        // Add log entry
+        const logLine = document.createElement('div');
+        logLine.innerHTML = `<span>[HANDSHAKE]</span> Switched routing to POP: ${data.pop} (${data.latency})`;
+        logConsole.appendChild(logLine);
+        logConsole.scrollTop = logConsole.scrollHeight;
+
+        // Animate graph bars
+        if (graphContainer) {
+          const bars = graphContainer.querySelectorAll('.graph-bar');
+          bars.forEach(bar => {
+            const randHeight = Math.floor(Math.random() * 65) + 25;
+            bar.style.height = `${randHeight}%`;
+          });
+        }
+      };
+
+      if (regionSelector) {
+        regionSelector.addEventListener('change', (e) => {
+          updateSimulation(e.target.value);
+        });
+      }
+
+      // Live graph jitter
+      setInterval(() => {
+        if (graphContainer) {
+          const bars = graphContainer.querySelectorAll('.graph-bar');
+          const randomIndex = Math.floor(Math.random() * bars.length);
+          const newH = Math.floor(Math.random() * 60) + 25;
+          bars[randomIndex].style.height = `${newH}%`;
+        }
+      }, 2000);
+
+      // --- G. BENCHMARK CALCULATOR ---
+      const reqSlider = document.getElementById('req-slider');
+      const regSlider = document.getElementById('reg-slider');
+      const sliderReqVal = document.getElementById('slider-req-val');
+      const sliderRegVal = document.getElementById('slider-reg-val');
+      const estSavings = document.getElementById('est-savings');
+      const legacyMs = document.getElementById('legacy-ms');
+      const globalMs = document.getElementById('global-ms');
+      const legacyFill = document.getElementById('legacy-fill');
+      const globalFill = document.getElementById('global-fill');
+
+      const calculateBenchmarks = () => {
+        const reqMillions = parseInt(reqSlider.value, 10);
+        const continents = parseInt(regSlider.value, 10);
+
+        sliderReqVal.textContent = `${reqMillions} Million`;
+        sliderRegVal.textContent = `${continents} Continent${continents > 1 ? 's' : ''}`;
+
+        // Calculations
+        const savings = Math.round(reqMillions * 74 + continents * 120);
+        estSavings.textContent = `$${savings.toLocaleString()}/mo`;
+
+        const legacyLatency = Math.min(260, 120 + continents * 22);
+        const globalLatency = Math.max(8, Math.round(18 - continents * 1.5));
+
+        legacyMs.textContent = `${legacyLatency}ms TTFB`;
+        globalMs.textContent = `${globalLatency}ms TTFB`;
+
+        legacyFill.style.width = `${Math.min(95, (legacyLatency / 260) * 100)}%`;
+        legacyFill.textContent = `${legacyLatency} ms`;
+
+        globalFill.style.width = `${Math.max(12, (globalLatency / 260) * 100)}%`;
+        globalFill.textContent = `${globalLatency} ms`;
+      };
+
+      if (reqSlider && regSlider) {
+        reqSlider.addEventListener('input', calculateBenchmarks);
+        regSlider.addEventListener('input', calculateBenchmarks);
+        calculateBenchmarks();
+      }
+
+      // --- H. PRICING MONTHLY / ANNUAL TOGGLE ---
+      const billMonthly = document.getElementById('bill-monthly');
+      const billAnnual = document.getElementById('bill-annual');
+      const pricePro = document.getElementById('price-pro');
+      const priceEnt = document.getElementById('price-ent');
+      const periodPro = document.getElementById('period-pro');
+      const periodEnt = document.getElementById('period-ent');
+
+      billMonthly.addEventListener('click', () => {
+        billMonthly.classList.add('active');
+        billMonthly.setAttribute('aria-selected', 'true');
+        billAnnual.classList.remove('active');
+        billAnnual.setAttribute('aria-selected', 'false');
+
+        pricePro.textContent = '29';
+        priceEnt.textContent = '249';
+        periodPro.textContent = '/month';
+        periodEnt.textContent = '/month';
+      });
+
+      billAnnual.addEventListener('click', () => {
+        billAnnual.classList.add('active');
+        billAnnual.setAttribute('aria-selected', 'true');
+        billMonthly.classList.remove('active');
+        billMonthly.setAttribute('aria-selected', 'false');
+
+        pricePro.textContent = '23';
+        priceEnt.textContent = '199';
+        periodPro.textContent = '/month (billed annually)';
+        periodEnt.textContent = '/month (billed annually)';
+      });
+
+    });
+  </script>
+</body>
+</html>
